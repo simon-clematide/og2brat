@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import lxml.etree as ET
 import codecs
-
+import re
 dictWords = {}
 countTerm = 1
 textSyntax = ""
@@ -70,15 +70,15 @@ def term(filename, args):
     global countTerm
     for term in allTerms:
         allAttr = term.get("values").split(" ")
+        allAttr = set(re.sub(r'[^:]*:','',attr) for attr in allAttr)
         allWords = term.findall("./W")
         #geht alle Attribute und Wörter in dem "Term"-Tag durch
         for attr in allAttr:
-            for word in allWords:
-                termID = "T" + str(countTerm)
-                text += termID +"\t"
-                text += attr + " " + word.get("o1") + " " + word.get("o2") +"\t"
-                text += word.text +"\n"
-                countTerm += 1
+
+            text += "T" + str(countTerm) + '\t' + attr + " " + allWords[0].get('o1') + ' ' + allWords[-1].get('o2') + '\t'
+            word_text = string_of_w(allWords)
+            text += word_text + '\n'
+            countTerm += 1
 
     #speichern der Termannotation
     outfile = codecs.open(args[0] +".ann", "a", encoding = "utf-8")
