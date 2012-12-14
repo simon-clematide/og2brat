@@ -31,12 +31,12 @@ def to_txt(filename, args):
     data = ET.parse(filename)
     allWords = data.findall("//W") #alle W-Tags
     for word in allWords:
-        o1 = word.get("o1")
+        o1 = int(word.get("o1"))
         if o1 > o2 and firstLine == False: #white-space
-            text += " "
+            text += " "* (o1-o2)
 
         text += word.text
-        o2 = word.get("o2")
+        o2 = int(word.get("o2"))
         firstLine = False
         attr = word.get("C")
         termID = "T" + str(countTerm)
@@ -69,7 +69,7 @@ def term(filename, args):
 
     global countTerm
     for term in allTerms:
-        allAttr = term.get("allvalues").split(" ")
+        allAttr = term.get("values").split(" ")
         allWords = term.findall("./W")
         #geht alle Attribute und Wörter in dem "Term"-Tag durch
         for attr in allAttr:
