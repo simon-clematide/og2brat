@@ -146,5 +146,15 @@ def syntax(filename, args):
     outfile.write(textSyntax)
     outfile.close()
 
+def string_of_w(allwords):
+    """Return string representation of list of w elements."""
+    result = ''
+    if len(allwords) == 1: return allwords[0].text
+    prev_o2 = int(allwords[0].get('o1'))
+    for i,w in enumerate(allwords):
+        curr_o1 = int(w.get('o1'))
+        result += ' ' *(curr_o1-prev_o2) + w.text
+        prev_o2 = int(w.get('o2'))
+    return result
 
 
