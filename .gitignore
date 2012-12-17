@@ -1,2 +1,4 @@
 .DS_Store
 *.pyc
+test/17608565/brat.ann
+test/17608565/brat.txt
