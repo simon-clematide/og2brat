@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import lxml.etree as ET
 import codecs
-import re
+import re, sys
 dictWords = {}
 countTerm = 1
 textSyntax = ""
@@ -98,6 +98,36 @@ def chunk(filename, args):
     """
     text = ""
     data = ET.parse(filename)
+    allTerms = data.findall(".//NG")
+
+    global countTerm
+    for term in allTerms:
+        allWords = term.findall("./W")
+        print >> sys.stderr, '# ',len(allWords)
+        if len(allWords) == 1: continue
+        text += "T" + str(countTerm) + '\t' + 'NG' + " " + allWords[0].get('o1') + ' ' + allWords[-1].get('o2') + '\t'
+        word_text = string_of_w(allWords)
+        text += word_text + '\n'
+        countTerm += 1
+
+    #speichern der Termannotation
+    outfile = codecs.open(args[0] +".ann", "a", encoding = "utf-8")
+    outfile.write(text)
+    outfile.close()
+
+
+def pos(filename, args):
+    """
+    Erzeugt die Chunk-Annotation aus der XML-Datei
+    @param filename: Filename
+    @param args: erwartet die Argumente von der Konsole,
+        args[0] ist die Ordnerstruktur inklusive Dateiname (ohne Endung) in welchem die Chunk-Annotation gespeichert wird
+
+    @var text: speichert die Chunk-Annotation
+    @var countChunk: zählt von 1 hoch für ID
+    """
+    text = ""
+    data = ET.parse(filename)
     allChunk = data.findall(".//W")
     print allChunk
 
@@ -142,7 +172,7 @@ def syntax(filename, args):
         countRel += 1
 
     #speichern der Chunk-Annotation
-    outfile = codecs.open(args[0] +".txt", "a", encoding = "utf-8")
+    outfile = codecs.open(args[0] +".ann", "a", encoding = "utf-8")
     outfile.write(textSyntax)
     outfile.close()
 
